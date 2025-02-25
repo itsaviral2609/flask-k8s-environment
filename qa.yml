@@ -1,0 +1,61 @@
+---
+# Source: flask-helm/templates/service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-dep-flask-helm
+  labels:
+    app: flask
+    env: qa
+    chart: flask-helm-0.1.0
+    release: qa-dep
+spec:
+  type: NodePort
+  selector:
+    app: flask
+    env: qa
+    release: qa-dep
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30007
+---
+# Source: flask-helm/templates/Deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qa-dep-flask-helm
+  labels:
+    app: flask
+    env: qa
+    chart: flask-helm-0.1.0
+    release: qa-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+      env: qa
+      release: qa-dep
+  template:
+    metadata:
+      labels:
+        app: flask
+        env: qa
+        release: qa-dep
+    spec:
+      containers:
+        - name: flask-cpu
+          image: aviralsingh2609/flask-helm:dev
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 2Gi
+          env:
+            - name: ENV
+              value: "qa"

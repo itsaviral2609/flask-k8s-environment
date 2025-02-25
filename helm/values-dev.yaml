@@ -1,0 +1,28 @@
+app:
+  replicas: 1
+  env: dev
+  container:
+    image: aviralsingh2609/flask-helm:dev
+  resources:
+    limits:
+      cpu: "0.2"
+      memory: "500Mi"
+    requests:
+      cpu: "0.1"
+      memory: "250Mi"
+
+service:
+  type: NodePort
+  port: 5000
+  targetPort: 5000
+  nodePort: 30007
+
+ingress:
+  enabled: false
+  hosts: []
+
+hpa:
+  enabled: false
+
+nameOverride: ""
+fullnameOverride: ""

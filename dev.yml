@@ -1,0 +1,61 @@
+---
+# Source: flask-helm/templates/service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dev-dep-flask-helm
+  labels:
+    app: flask
+    env: dev
+    chart: flask-helm-0.1.0
+    release: dev-dep
+spec:
+  type: NodePort
+  selector:
+    app: flask
+    env: dev
+    release: dev-dep
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30007
+---
+# Source: flask-helm/templates/Deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-dep-flask-helm
+  labels:
+    app: flask
+    env: dev
+    chart: flask-helm-0.1.0
+    release: dev-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask
+      env: dev
+      release: dev-dep
+  template:
+    metadata:
+      labels:
+        app: flask
+        env: dev
+        release: dev-dep
+    spec:
+      containers:
+        - name: flask-cpu
+          image: aviralsingh2609/flask-helm:dev
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              cpu: "0.2"
+              memory: 500Mi
+            requests:
+              cpu: "0.1"
+              memory: 250Mi
+          env:
+            - name: ENV
+              value: "dev"

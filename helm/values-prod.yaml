@@ -1,0 +1,32 @@
+app:
+  replicas: 1
+  env: prod
+  container:
+    image: aviralsingh2609/flask-helm:dev
+  resources:
+    limits:
+      cpu: "4"
+      memory: "16Gi"
+    requests:
+      cpu: "4"
+      memory: "16Gi"
+
+service:
+  type: NodePort
+  port: 5000
+  targetPort: 5000
+  nodePort: 30007
+
+ingress:
+  enabled: false
+  hosts: []
+
+hpa:
+  enabled: true
+  maxreplicas: 10
+  minreplicas: 2
+  cputil: 70
+  
+
+nameOverride: ""
+fullnameOverride: ""

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "flask-helm.fullname" . }}
+  labels:
+    {{- include "flask-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      {{- include "flask-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "flask-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: flask-cpu
+          image: {{ .Values.app.container.image }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
+          env:
+            - name: ENV
+              value: {{ .Values.app.env | quote }}
